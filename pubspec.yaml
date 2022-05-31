@@ -1,9 +1,9 @@
 name: dual_scroll
 description: A Flutter plugin to provide platform independent/dependant scrolling and panning functionality.
 version: 0.0.1
-homepage: https:/nbrg-developers.web.app/plugins/flutter/dual_scroll
+homepage: https://nbrg-developers.web.app/plugins/flutter/dual_scroll
 repository: https://github.com/nbrgdevelopers41/dual_scroll
-documentation: https:/nbrg-developers.web.app/docs/plugins/flutter/dual_scroll
+documentation: https://nbrg-developers.web.app/docs/plugins/flutter/dual_scroll
 
 environment:
   sdk: ">=2.17.1 <3.0.0"

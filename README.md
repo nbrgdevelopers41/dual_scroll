@@ -1,16 +1,3 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
 A Flutter plugin to provide platform independent/dependant scrolling and panning functionality.
 
 ## Features
@@ -20,20 +7,62 @@ A Flutter plugin to provide platform independent/dependant scrolling and panning
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+ Add ```dual_scroll: any``` to your pubspec.yaml under `dependencies` section as follows.
+
+ ```yaml
+ dependencies:
+# Your other dependencies...
+   dual_scroll: any
+# Your other dependencies...
+ ```
+ 
+ Run ```flutter pub get``` to get the package.
+
+ Alternatively, your editor might support 
+ 
+ ```flutter pub get```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
+Start by importing the package
 ```dart
-const like = 'sample';
+import 'package:dual_scroll/dual_scroll.dart';
+```
+
+Use by wrapping the Widget You want to be scrollable in the following way:
+```dart
+return DualScroll(
+    verticalScrollbar: ScrollBar.defaultScrollBar(),
+    horizontalScrollbar: ScrollBar.defaultScrollBar(),
+    child: Container(), /* Your child widget here*/
+);
+```
+
+## Usage with ListView/GridView/Scrollable Widgets as Child/Children
+
+To use the `DualScroll` widget while having a ListView/GridView/Scrollable Widget(s) as its child/children, initialize DualScroll in this way:
+```dart
+return DualScroll(
+    verticalScrollController: yourVerticalScrollController,
+    horizontalScrollController: yourHorizontalScrollController,
+    verticalScrollbar: ScrollBar.defaultScrollBar(),
+    horizontalScrollbar: ScrollBar.defaultScrollBar(),
+    child: Container(), /* Your child widget here*/
+);
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+If you experience any issues, please file those [here on Github][1]. If you want to contribute to this repo, open a PR on [Github][2]. If you want to view the API in detail, visit [dual_scroll on our website][3].
+
+Also, We would really appreciate if you view our [website][4] and our [apps][5].
+
+[1]: https://github.com/nbrgdevelopers41/dual_scroll/issues
+
+[2]: https://github.com/nbrgdevelopers41/dual_scroll/pulls
+
+[3]: https://nbrg-developers.web.app/docs/plugins/flutter/dual_scroll
+
+[4]: https://nbrg-developers.web.app
+
+[5]: https://nbrg-developers.web.app/services/one-nbrg/apps
