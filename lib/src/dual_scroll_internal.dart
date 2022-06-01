@@ -124,6 +124,10 @@ class _DualScrollState extends State<DualScroll> {
         .addListener(() => updatePillPositionWhenScrolled(Axis.horizontal));
     verticalScrollController
         .addListener(() => updatePillPositionWhenScrolled(Axis.vertical));
+
+    horizontalScrollController.addListener(() => _refreshValues());
+
+    verticalScrollController.addListener(() => _refreshValues());
   }
 
   @override
@@ -172,7 +176,7 @@ class _DualScrollState extends State<DualScroll> {
             ),
           ),
         ),
-        _horizVP == _horizMaxExt
+        _horizVP <= _horizMaxExt
             ? const SizedBox(
                 width: 0,
                 height: 0,
@@ -206,6 +210,29 @@ class _DualScrollState extends State<DualScroll> {
             : _getScrollablePill(orientation: Axis.vertical),
       ],
     );
+  }
+
+  /// Refreshes the controller values in order to avoid using stale values.
+  _refreshValues() {
+    /// If condition checks whether the scroll controller is attached or not
+    if (_getController(Axis.horizontal).hasClients) {
+      var controller = _getController(Axis.horizontal);
+      horizCompleteSize = controller.position.maxScrollExtent;
+      _horizMaxExt = (controller.position.viewportDimension +
+          controller.position.maxScrollExtent);
+      _horizVP = controller.position.viewportDimension;
+      _horizPillSize = _getPillSize(Axis.horizontal);
+    }
+
+    /// If condition checks whether the scroll controller is attached or not
+    if (_getController(Axis.vertical).hasClients) {
+      var controller = _getController(Axis.vertical);
+      vertCompleteSize = controller.position.maxScrollExtent;
+      _vertMaxExt = (controller.position.viewportDimension +
+          controller.position.maxScrollExtent);
+      _vertVP = controller.position.viewportDimension;
+      _vertPillSize = _getPillSize(Axis.vertical);
+    }
   }
 
   @override
@@ -261,10 +288,10 @@ class _DualScrollState extends State<DualScroll> {
       _getController(orientation).position.viewportDimension;
 
   // double _getTotalScrollableSize(Axis orientation) =>
-  //     getController(orientation).position.maxScrollExtent;
+  //     _getController(orientation).position.maxScrollExtent;
 
   // double _jumpTo(delta, Axis orientation) =>
-  //     (delta * getRatio) + getController(orientation).offset;
+  //     (delta * getRatio) + _getController(orientation).offset;
 
   // double _getTrackLength(Axis orientation) => orientation == Axis.horizontal
   //     ? _horizTrackKey.currentContext!.size!.width
