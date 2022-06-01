@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-/// Scrolls Horizontally Or Vertically the [child], Dependent onState
+/// Scrolls Horizontally Or Vertically the [child], Independent/Dependant of Platform, which can be controlled by [isPlatformIndependent]
 class DualScroll extends StatefulWidget {
   /// The controller for the vertical scrollable view, useful when using [DualScroll] with a ListView/GridView as the child
   final ScrollController? verticalScrollController;
@@ -28,9 +28,6 @@ class DualScroll extends StatefulWidget {
   /// The dimmed color for the pill
   final Color? dimmedPillColor;
 
-  /// Color for when the state of the pill is unknown
-  final Color? unknownStatePillColor;
-
   /// The color of the track.
   final Color? trackColor;
 
@@ -40,29 +37,24 @@ class DualScroll extends StatefulWidget {
   /// The color when the track is dimmed/Not hovered upon
   final Color? trackColorDimmed;
 
-  /// The color when the state of the scrollbar's track is unknown
-  final Color? unknownStateTrackColor;
-
   /// The settings for the scrollbar
   final ScrollBarSettings settings;
 
-  /// Chooses whether the returned widget implementation contains panning/scrolling based on the platform or not.
+  /// Defines whether the returned widget implementation contains panning/scrolling based on the platform or not.
   final bool isPlatformIndependent;
 
   const DualScroll({
     Key? key,
-    this.isPlatformIndependent = false,
-    this.verticalScrollController,
-    this.horizontalScrollController,
     required this.child,
     required this.verticalScrollBar,
     required this.horizontalScrollBar,
+    this.isPlatformIndependent = false,
+    this.verticalScrollController,
+    this.horizontalScrollController,
     this.pillColor,
     this.dimmedPillColor,
-    this.unknownStatePillColor,
     this.trackColor,
     this.trackColorDimmed,
-    this.unknownStateTrackColor,
     this.hoverColor,
     this.settings = const ScrollBarSettings(),
   }) : super(key: key);
@@ -142,10 +134,10 @@ class _DualScrollState extends State<DualScroll> {
     if (width != prevWidth || height != prevHeight) {
       Future.delayed(Duration.zero, () {
         setState(() {
-          initializeController(Axis.vertical);
-          initializeController(Axis.horizontal);
-          keepPillInCheckWhenScreenResized(Axis.vertical);
-          keepPillInCheckWhenScreenResized(Axis.horizontal);
+          _initializeController(Axis.vertical);
+          _initializeController(Axis.horizontal);
+          _keepPillInCheckWhenScreenResized(Axis.vertical);
+          _keepPillInCheckWhenScreenResized(Axis.horizontal);
         });
       });
       prevHeight = height!;
@@ -165,7 +157,7 @@ class _DualScrollState extends State<DualScroll> {
             padding: scrollBarSettings.verticalPadding,
             physics: scrollBarSettings.verticalPhysics,
             scrollDirection: Axis.vertical,
-            controller: getController(Axis.vertical),
+            controller: _getController(Axis.vertical),
             child: SingleChildScrollView(
               clipBehavior: scrollBarSettings.clipBehavior,
               dragStartBehavior: DragStartBehavior.start,
@@ -175,7 +167,7 @@ class _DualScrollState extends State<DualScroll> {
               padding: scrollBarSettings.horizontalPadding,
               physics: scrollBarSettings.horizontalPhysics,
               scrollDirection: Axis.horizontal,
-              controller: getController(Axis.horizontal),
+              controller: _getController(Axis.horizontal),
               child: widget.child,
             ),
           ),
@@ -185,29 +177,33 @@ class _DualScrollState extends State<DualScroll> {
                 width: 0,
                 height: 0,
               )
-            : getScrollBarTrack(
+            : _getScrollBarTrack(
                 orientation: Axis.horizontal,
+                trackColor: widget.trackColor,
+                dimmedColor: widget.trackColorDimmed,
               ),
         _horizVP == _horizMaxExt
             ? const SizedBox(
                 width: 0,
                 height: 0,
               )
-            : getScrollablePill(orientation: Axis.horizontal),
+            : _getScrollablePill(orientation: Axis.horizontal),
         _vertVP == _vertMaxExt
             ? const SizedBox(
                 width: 0,
                 height: 0,
               )
-            : getScrollBarTrack(
+            : _getScrollBarTrack(
                 orientation: Axis.vertical,
+                trackColor: widget.trackColor,
+                dimmedColor: widget.trackColorDimmed,
               ),
         _vertVP == _vertMaxExt
             ? const SizedBox(
                 width: 0,
                 height: 0,
               )
-            : getScrollablePill(orientation: Axis.vertical),
+            : _getScrollablePill(orientation: Axis.vertical),
       ],
     );
   }
@@ -228,7 +224,7 @@ class _DualScrollState extends State<DualScroll> {
   }
 
   updatePillPositionWhenScrolled(Axis orientation) {
-    ScrollController controller = getController(orientation);
+    ScrollController controller = _getController(orientation);
     setState(() {
       if (orientation == Axis.horizontal) {
         horizpillCurrentTravel = (controller.offset) / getRatio(orientation);
@@ -240,13 +236,13 @@ class _DualScrollState extends State<DualScroll> {
   }
 
   double getRatio(Axis orientation) {
-    ScrollController? controller = getController(orientation);
+    ScrollController? controller = _getController(orientation);
     return (controller.position.maxScrollExtent /
-        (controller.position.viewportDimension - getPillSize(orientation)));
+        (controller.position.viewportDimension - _getPillSize(orientation)));
   }
 
-  double getPillSize(Axis orientation) {
-    ScrollController? controller = getController(orientation);
+  double _getPillSize(Axis orientation) {
+    ScrollController? controller = _getController(orientation);
 
     double size = (controller.position.viewportDimension /
             (controller.position.maxScrollExtent -
@@ -261,35 +257,35 @@ class _DualScrollState extends State<DualScroll> {
     }
   }
 
-  double getViewPort(Axis orientation) =>
-      getController(orientation).position.viewportDimension;
+  double _getViewPort(Axis orientation) =>
+      _getController(orientation).position.viewportDimension;
 
-  double getTotalScrollableSize(Axis orientation) =>
-      getController(orientation).position.maxScrollExtent;
+  // double _getTotalScrollableSize(Axis orientation) =>
+  //     getController(orientation).position.maxScrollExtent;
 
-  double jumpTo(delta, Axis orientation) =>
-      (delta * getRatio) + getController(orientation).offset;
+  // double _jumpTo(delta, Axis orientation) =>
+  //     (delta * getRatio) + getController(orientation).offset;
 
-  double trackLength(Axis orientation) => orientation == Axis.horizontal
-      ? _horizTrackKey.currentContext!.size!.width
-      : _vertTrackKey.currentContext!.size!.width;
+  // double _getTrackLength(Axis orientation) => orientation == Axis.horizontal
+  //     ? _horizTrackKey.currentContext!.size!.width
+  //     : _vertTrackKey.currentContext!.size!.width;
 
-  void onDragUpdate(DragUpdateDetails duDetails, {required Axis orientation}) {
+  void _onDragUpdate(DragUpdateDetails duDetails, {required Axis orientation}) {
     if (orientation == Axis.horizontal) {
       if (0 > horizpillCurrentTravel!) {
         horizpillCurrentTravel = 0;
       } else if (horizpillCurrentTravel! >
-          getViewPort(orientation) - getPillSize(orientation)) {
+          _getViewPort(orientation) - _getPillSize(orientation)) {
         horizpillCurrentTravel =
-            getViewPort(orientation) - getPillSize(orientation);
+            _getViewPort(orientation) - _getPillSize(orientation);
       } else if (0 <= horizpillCurrentTravel! &&
           horizpillCurrentTravel! <=
-              getViewPort(orientation) - getPillSize(orientation)) {
+              _getViewPort(orientation) - _getPillSize(orientation)) {
         horizpillCurrentTravel = horizpillCurrentTravel! + duDetails.delta.dx;
         if (horizpillCurrentTravel! != 0 ||
             horizpillCurrentTravel! !=
-                getViewPort(orientation) - getPillSize(orientation)) {
-          getController(orientation)
+                _getViewPort(orientation) - _getPillSize(orientation)) {
+          _getController(orientation)
               .jumpTo(horizpillCurrentTravel! * getRatio(orientation));
         }
       }
@@ -297,24 +293,24 @@ class _DualScrollState extends State<DualScroll> {
       if (vertpillCurrentTravel! < 0) {
         vertpillCurrentTravel = 0;
       } else if (vertpillCurrentTravel! >
-          getViewPort(orientation) - getPillSize(orientation)) {
+          _getViewPort(orientation) - _getPillSize(orientation)) {
         vertpillCurrentTravel =
-            getViewPort(orientation) - getPillSize(orientation);
+            _getViewPort(orientation) - _getPillSize(orientation);
       } else if (vertpillCurrentTravel! >= 0 &&
           vertpillCurrentTravel! <=
-              getViewPort(orientation) - getPillSize(orientation)) {
+              _getViewPort(orientation) - _getPillSize(orientation)) {
         vertpillCurrentTravel = vertpillCurrentTravel! + duDetails.delta.dy;
         if (vertpillCurrentTravel! != 0 ||
             vertpillCurrentTravel! !=
-                getViewPort(orientation) - getPillSize(orientation)) {
-          getController(orientation)
+                _getViewPort(orientation) - _getPillSize(orientation)) {
+          _getController(orientation)
               .jumpTo(vertpillCurrentTravel! * getRatio(orientation));
         }
       }
     }
   }
 
-  void onTapTrack(TapDownDetails tapDownDetails, {required Axis orientation}) {
+  void _onTapTrack(TapDownDetails tapDownDetails, {required Axis orientation}) {
     double horizTrackLengthFromPillPosition =
         horizpillCurrentTravel! + _horizPillSize;
     double vertTrackLengthFromPillPosition =
@@ -399,54 +395,53 @@ class _DualScrollState extends State<DualScroll> {
     }
   }
 
-  void keepPillInCheckWhenScreenResized(Axis orientation) {
+  void _keepPillInCheckWhenScreenResized(Axis orientation) {
     bool ishoriz = orientation == Axis.horizontal ? true : false;
     double pillCurrentPosition =
         ishoriz ? horizpillCurrentTravel! : vertpillCurrentTravel!;
 
     if (pillCurrentPosition >
-        getViewPort(orientation) - getPillSize(orientation)) {
-      pillCurrentPosition = getViewPort(orientation) - getPillSize(orientation);
-      getController(orientation)
+        _getViewPort(orientation) - _getPillSize(orientation)) {
+      pillCurrentPosition =
+          _getViewPort(orientation) - _getPillSize(orientation);
+      _getController(orientation)
           .jumpTo(pillCurrentPosition * getRatio(orientation));
     }
   }
 
-  void initializeController(Axis orientation) {
+  void _initializeController(Axis orientation) {
     bool ishoriz = orientation == Axis.horizontal ? true : false;
-    ScrollController controller = getController(orientation);
+    ScrollController controller = _getController(orientation);
     if (ishoriz) {
       horizCompleteSize = controller.position.maxScrollExtent;
       _horizMaxExt = (controller.position.viewportDimension +
           controller.position.maxScrollExtent);
       _horizVP = controller.position.viewportDimension;
-      _horizPillSize = getPillSize(orientation);
+      _horizPillSize = _getPillSize(orientation);
     } else {
       vertCompleteSize = controller.position.maxScrollExtent;
       _vertMaxExt = (controller.position.viewportDimension +
           controller.position.maxScrollExtent);
       _vertVP = controller.position.viewportDimension;
-      _vertPillSize = getPillSize(orientation);
+      _vertPillSize = _getPillSize(orientation);
     }
   }
 
-  ScrollController getController(Axis orientation) =>
+  ScrollController _getController(Axis orientation) =>
       orientation == Axis.vertical
           ? verticalScrollController
           : horizontalScrollController;
 
-  BorderRadiusGeometry getPillEndsRadius({required ScrollBar scrollbar}) =>
+  BorderRadiusGeometry _getPillEndsRadius({required ScrollBar scrollbar}) =>
       BorderRadius.all(scrollbar.roundedEndsRadius);
 
-  Color getPillColor({
+  Color _getPillColor({
     required ScrollBar scrollbar,
     required bool isHovering,
     required Axis orientation,
   }) {
-    Color normalColor =
-        widget.pillColor ?? const Color.fromARGB(228, 26, 26, 26);
-    Color dimColor =
-        widget.dimmedPillColor ?? const Color.fromARGB(159, 24, 24, 24);
+    Color normalColor = widget.pillColor ?? const Color(0xE41A1A1A);
+    Color dimColor = widget.dimmedPillColor ?? const Color(0x9F181818);
 
     if (scrollbar.scrollPillVisible == VisibilityOption.onHover ||
         scrollbar.scrollTrackVisible == VisibilityOption.onHover) {
@@ -460,18 +455,18 @@ class _DualScrollState extends State<DualScroll> {
     }
   }
 
-  Widget getScrollBarTrack({
+  Widget _getScrollBarTrack({
     required Axis orientation,
     Color? trackColor,
-    Color? unknownColor,
+    Color? dimmedColor,
     Color? borderColor,
   }) {
     ScrollBar scrollbar = getScrollBar(orientation);
     bool? ishoriz = Axis.horizontal == orientation ? true : false;
 
     Color internalTrackColor = trackColor ?? Colors.black.withOpacity(0.03);
-    Color internalUnknownColor = unknownColor ?? Colors.transparent;
     Color internalBorderColor = borderColor ?? Colors.black.withOpacity(0.083);
+    dimmedColor = dimmedColor ?? Colors.black.withOpacity(0.02);
 
     Widget getScrollTrackWidget({
       bool isOnTapScroll = true,
@@ -481,7 +476,7 @@ class _DualScrollState extends State<DualScroll> {
     }) =>
         GestureDetector(
           onTapDown: (tapDown) => isOnTapScroll
-              ? onTapTrack(tapDown, orientation: orientation)
+              ? _onTapTrack(tapDown, orientation: orientation)
               : null,
           child: InkWell(
             onHover: (hover) => setState(() => ishoriz
@@ -524,23 +519,15 @@ class _DualScrollState extends State<DualScroll> {
         switch (scrollbar.scrollTrackVisible) {
           case VisibilityOption.onHover:
             return getScrollTrackWidget(
-              color: isVerticalHovering
-                  ? internalTrackColor
-                  : internalUnknownColor,
-              borderColor: isVerticalHovering
-                  ? internalBorderColor
-                  : internalUnknownColor,
+              color: isVerticalHovering ? internalTrackColor : dimmedColor,
+              borderColor:
+                  isVerticalHovering ? internalBorderColor : dimmedColor,
             );
 
           case VisibilityOption.always:
             return getScrollTrackWidget(
               color: internalTrackColor,
               borderColor: internalBorderColor,
-            );
-          case VisibilityOption.never:
-            return getScrollTrackWidget(
-              color: internalUnknownColor,
-              borderColor: internalUnknownColor,
             );
         }
 
@@ -548,12 +535,9 @@ class _DualScrollState extends State<DualScroll> {
         switch (scrollbar.scrollTrackVisible) {
           case VisibilityOption.onHover:
             return getScrollTrackWidget(
-              color: isHorizontalHovering
-                  ? internalTrackColor
-                  : internalUnknownColor,
-              borderColor: isHorizontalHovering
-                  ? internalBorderColor
-                  : internalUnknownColor,
+              color: isHorizontalHovering ? internalTrackColor : dimmedColor,
+              borderColor:
+                  isHorizontalHovering ? internalBorderColor : dimmedColor,
             );
 
           case VisibilityOption.always:
@@ -561,16 +545,11 @@ class _DualScrollState extends State<DualScroll> {
               color: internalTrackColor,
               borderColor: internalBorderColor,
             );
-          case VisibilityOption.never:
-            return getScrollTrackWidget(
-              color: internalUnknownColor,
-              borderColor: internalUnknownColor,
-            );
         }
     }
   }
 
-  Widget getScrollablePill({
+  Widget _getScrollablePill({
     required Axis orientation,
   }) {
     ScrollBar scrollbar = getScrollBar(orientation);
@@ -596,7 +575,8 @@ class _DualScrollState extends State<DualScroll> {
                   ? 60
                   : _horizPillSize,
           child: GestureDetector(
-            onPanUpdate: (drag) => onDragUpdate(drag, orientation: orientation),
+            onPanUpdate: (drag) =>
+                _onDragUpdate(drag, orientation: orientation),
             child: InkWell(
               onHover: (hover) {
                 setState(() {
@@ -611,8 +591,8 @@ class _DualScrollState extends State<DualScroll> {
               onTap: () {},
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: getPillEndsRadius(scrollbar: scrollbar),
-                  color: getPillColor(
+                  borderRadius: _getPillEndsRadius(scrollbar: scrollbar),
+                  color: _getPillColor(
                     scrollbar: scrollbar,
                     isHovering:
                         ishoriz ? isHorizontalHovering : isVerticalHovering,

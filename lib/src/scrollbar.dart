@@ -54,5 +54,4 @@ class ScrollBar {
 enum VisibilityOption {
   onHover,
   always,
-  never,
 }

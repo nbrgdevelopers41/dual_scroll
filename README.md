@@ -51,6 +51,34 @@ return DualScroll(
 );
 ```
 
+## Customizing Additional Properties
+
+You can pass `ScrollBarSettings` to the DualScroll widget in the constructor with appropriate parameter (It is not necessary to provide all parameters): 
+```dart
+var scrollBarSettings = ScrollBarSettings(
+    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, // Defaults to ScrollViewKeyboardDismissBehavior.manual
+    clipBehavior: Clip.none, // Defaults to [Clip.hardEdge]
+    verticalRestorationId: 'vertId', // Defaults to null
+    horizontalRestorationId: 'horizId', // Defaults to null
+    verticalPhysics = const ClampingScrollPhysics(), // Defaults to BouncingScrollPhysics
+    horizontalPhysics = const ClampingScrollPhysics(), // Defaults to BouncingScrollPhysics
+    verticalPadding: const EdgeInsets.all(8.0), //Defaults to null
+    horizontalPadding: const EdgeInsets.all(8.0), //defaults to null
+  );
+  
+  return DualScroll(
+        // scrollBars and scrollControllers here
+        settings: scrollBarSettings, //Optional
+        pillColor: Colors.blueAccent, //Optional
+        dimmedPillColor: Colors.blueAccent.withOpacity(0.8), //Optional
+        trackColor: Colors.blueAccent.withOpacity(0.8), //Optional
+        trackColorDimmed: Colors.blueAccent.withOpacity(0.6), //Optional
+        hoverColor: Colors.blue.withOpacity(0.85), //Optional
+        child: child, // Required
+    );
+```
+
+
 ## Additional information
 
 If you experience any issues, please file those [here on Github][1]. If you want to contribute to this repo, open a PR on [Github][2]. If you want to view the API in detail, visit [dual_scroll on our website][3].
