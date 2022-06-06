@@ -1,3 +1,7 @@
+## 0.0.5 
+
+* Performance Improvement.
+
 ## 0.0.4 
 
 * Fixed a bug due to which the scrollbar(s) did not show when the child changed its size.
