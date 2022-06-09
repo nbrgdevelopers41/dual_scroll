@@ -1,3 +1,7 @@
+## 0.0.7
+
+* Relaxed Constraints for [synaptics_driver_fix_windows][https://pub.dev/packages/synaptics_driver_fix_windows]
+
 ## 0.0.6 
 
 * Added an optional fix for Horizontal Scrolling on Windows, which was not working on some devices with Synaptics Touchpad and (Touchpad) Drivers.
