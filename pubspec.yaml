@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  synaptics_driver_fix_windows: 0.0.2
+  synaptics_driver_fix_windows: ^0.0.2
 
 dev_dependencies:
   flutter_test:
