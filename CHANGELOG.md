@@ -1,3 +1,7 @@
+## 0.0.6 
+
+* Added an optional fix for Horizontal Scrolling on Windows, which was not working on some devices with Synaptics Touchpad and (Touchpad) Drivers.
+
 ## 0.0.5 
 
 * Performance Improvement.

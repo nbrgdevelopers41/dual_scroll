@@ -4,6 +4,7 @@ import 'package:dual_scroll/src/scrollbar_settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:synaptics_driver_fix_windows/synaptics_driver_fix_windows.dart';
 
 /// Scrolls Horizontally Or Vertically the [child], Independent/Dependant of Platform, which can be controlled by [isPlatformIndependent]
 class DualScroll extends StatefulWidget {
@@ -43,12 +44,19 @@ class DualScroll extends StatefulWidget {
   /// Defines whether the returned widget implementation contains panning/scrolling based on the platform or not.
   final bool isPlatformIndependent;
 
+  /// This will fix horizontal scrolling on some windows devices with synaptics touchpad. For more info, visit [pub.dev][1]
+  ///
+  /// [1]: https://pub.dev/packages/synaptics_driver_fix_windows
+  final bool shouldUseSynapticsTouchpadFix;
+
   const DualScroll({
     Key? key,
     required this.child,
     required this.verticalScrollBar,
     required this.horizontalScrollBar,
     this.isPlatformIndependent = false,
+    this.shouldUseSynapticsTouchpadFix = false,
+    this.settings = const ScrollBarSettings(),
     this.verticalScrollController,
     this.horizontalScrollController,
     this.pillColor,
@@ -56,7 +64,6 @@ class DualScroll extends StatefulWidget {
     this.trackColor,
     this.trackColorDimmed,
     this.hoverColor,
-    this.settings = const ScrollBarSettings(),
   }) : super(key: key);
 
   @override
@@ -103,6 +110,8 @@ class _DualScrollState extends State<DualScroll> {
 
   late ScrollBar horizontalScrollBar, verticalScrollBar;
 
+  late bool _shouldUseSynapticsTouchpadFix;
+
   ScrollBar getScrollBar(Axis orientation) =>
       orientation == Axis.horizontal ? horizontalScrollBar : verticalScrollBar;
 
@@ -114,6 +123,8 @@ class _DualScrollState extends State<DualScroll> {
 
     horizontalScrollBar = widget.horizontalScrollBar;
     verticalScrollBar = widget.verticalScrollBar;
+
+    _shouldUseSynapticsTouchpadFix = widget.shouldUseSynapticsTouchpadFix;
 
     horizontalScrollController =
         widget.horizontalScrollController ?? ScrollController();
@@ -148,7 +159,7 @@ class _DualScrollState extends State<DualScroll> {
       prevWidth = width!;
     }
 
-    return Stack(
+    Widget child = Stack(
       alignment: Alignment.bottomRight,
       children: [
         ScrollConfiguration(
@@ -210,6 +221,13 @@ class _DualScrollState extends State<DualScroll> {
             : _getScrollablePill(orientation: Axis.vertical),
       ],
     );
+
+    return _shouldUseSynapticsTouchpadFix
+        ? WindowsSynapticsFixWidget(
+            scrollController: horizontalScrollController,
+            child: child,
+          )
+        : child;
   }
 
   /// Refreshes the controller values in order to avoid using stale values.

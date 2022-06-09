@@ -34,6 +34,7 @@ Use by wrapping the Widget You want to be scrollable in the following way:
 return DualScroll(
     verticalScrollbar: ScrollBar.defaultScrollBar(),
     horizontalScrollbar: ScrollBar.defaultScrollBar(),
+    shouldUseSynapticsTouchpadFix: true, // Fixes horizontal scrolling on some windows devices with synaptics touchpad, defaults to false
     child: Container(), /* Your child widget here*/
 );
 ```
@@ -47,6 +48,7 @@ return DualScroll(
     horizontalScrollController: yourHorizontalScrollController,
     verticalScrollbar: ScrollBar.defaultScrollBar(),
     horizontalScrollbar: ScrollBar.defaultScrollBar(),
+    shouldUseSynapticsTouchpadFix: true, // Fixes horizontal scrolling on some windows devices with synaptics touchpad, defaults to false
     child: Container(), /* Your child widget here*/
 );
 ```
@@ -68,6 +70,7 @@ var scrollBarSettings = ScrollBarSettings(
   
   return DualScroll(
         // scrollBars and scrollControllers here
+        shouldUseSynapticsTouchpadFix: true, // Fixes horizontal scrolling on some windows devices with synaptics touchpad, defaults to false
         settings: scrollBarSettings, //Optional
         pillColor: Colors.blueAccent, //Optional
         dimmedPillColor: Colors.blueAccent.withOpacity(0.8), //Optional

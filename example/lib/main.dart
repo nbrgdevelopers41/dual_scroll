@@ -51,13 +51,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    const ScrollBar(
-      hoverThickness: 12.0,
-      thickness: 8.0,
-      scrollPillVisible: VisibilityOption.always,
-      scrollTrackVisible: VisibilityOption.always,
-      roundedEndsRadius: Radius.elliptical(5.0, 5.0),
-    );
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -66,6 +59,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: DualScroll(
           verticalScrollBar: ScrollBar.defaultScrollBar(),
           horizontalScrollBar: ScrollBar.defaultScrollBar(),
+          shouldUseSynapticsTouchpadFix:
+              true, // Fixes horizontal scrolling issues on some windows devices with Synaptics Touchpads
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Container(
