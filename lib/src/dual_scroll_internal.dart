@@ -80,8 +80,8 @@ class DualScroll extends StatefulWidget {
 }
 
 class _DualScrollState extends State<DualScroll> {
-  late ScrollController horizontalScrollController = ScrollController();
-  late ScrollController verticalScrollController = ScrollController();
+  late ScrollController horizontalScrollController;
+  late ScrollController verticalScrollController;
 
   double? width = 0;
   double? height = 0;

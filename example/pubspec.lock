@@ -53,10 +53,10 @@ packages:
   dual_scroll:
     dependency: "direct main"
     description:
-      name: dual_scroll
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.5"
+      path: ".."
+      relative: true
+    source: path
+    version: "0.0.7"
   fake_async:
     dependency: transitive
     description:
@@ -149,6 +149,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  synaptics_driver_fix_windows:
+    dependency: transitive
+    description:
+      name: synaptics_driver_fix_windows
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   term_glyph:
     dependency: transitive
     description:
