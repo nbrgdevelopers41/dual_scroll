@@ -1,12 +1,18 @@
 # Changelog For `dual_scroll` Package
 
+## 0.0.9
+
+* Removes [`synaptics_driver_fix_windows`][1] package as it is discontinued.
+* You can no longer use the driver fix.
+* Updated README to reflect changes due to the removal of [`synaptics_driver_fix_windows`][1] package.
+
 ## 0.0.8
 
 * Fixed an issue where horizontal Scroll was not working.
 
 ## 0.0.7
 
-* Relaxed Constraints for [synaptics_driver_fix_windows][https://pub.dev/packages/synaptics_driver_fix_windows]
+* Relaxed Constraints for [synaptics_driver_fix_windows][1]
 
 ## 0.0.6
 
@@ -32,3 +38,5 @@
 ## 0.0.1
 
 * Initial Release
+
+[1]: https://pub.dev/packages/synaptics_driver_fix_windows

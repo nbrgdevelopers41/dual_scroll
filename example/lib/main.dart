@@ -59,13 +59,11 @@ class _MyHomePageState extends State<MyHomePage> {
         child: DualScroll(
           verticalScrollBar: ScrollBar.defaultScrollBar(),
           horizontalScrollBar: ScrollBar.defaultScrollBar(),
-          shouldUseSynapticsTouchpadFix:
-              true, // Fixes horizontal scrolling issues on some windows devices with Synaptics Touchpads
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Container(
-              width: 840,
-              height: 1100,
+              width: 1800,
+              height: 2400,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [

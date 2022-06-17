@@ -1,13 +1,17 @@
-A Flutter plugin to provide platform independent/dependant scrolling and panning functionality.
+# A Flutter plugin to provide platform independent/dependant scrolling and panning functionality
 
 ## Features
 
 * This package can scroll horizontally and vertically, the scroll is locked once it is scrolled in a particular direction.
 * This package uses touch gestures on Mobile Platforms and Mouse/Trackpad inputs on Desktop/Web.
 
+## Note
+
+* We have removed the [`synaptics_driver_fix_windows`][6] package as it is discontinued.
+
 ## Getting started
 
- Add ```dual_scroll: any``` to your pubspec.yaml under `dependencies` section as follows.
+ Add ```dual_scroll: ^0.0.9``` to your pubspec.yaml under `dependencies` section as follows.
 
  ```yaml
  dependencies:
@@ -15,26 +19,27 @@ A Flutter plugin to provide platform independent/dependant scrolling and panning
    dual_scroll: any
 # Your other dependencies...
  ```
- 
+
  Run ```flutter pub get``` to get the package.
 
- Alternatively, your editor might support 
- 
+ Alternatively, your editor might support
+
  ```flutter pub get```
 
 ## Usage
 
 Start by importing the package
+
 ```dart
 import 'package:dual_scroll/dual_scroll.dart';
 ```
 
 Use by wrapping the Widget You want to be scrollable in the following way:
+
 ```dart
 return DualScroll(
     verticalScrollbar: ScrollBar.defaultScrollBar(),
     horizontalScrollbar: ScrollBar.defaultScrollBar(),
-    shouldUseSynapticsTouchpadFix: true, // Fixes horizontal scrolling on some windows devices with synaptics touchpad, defaults to false
     child: Container(), /* Your child widget here*/
 );
 ```
@@ -42,20 +47,21 @@ return DualScroll(
 ## Usage with ListView/GridView/Scrollable Widgets as Child/Children
 
 To use the `DualScroll` widget while having a ListView/GridView/Scrollable Widget(s) as its child/children, initialize DualScroll in this way:
+
 ```dart
 return DualScroll(
     verticalScrollController: yourVerticalScrollController,
     horizontalScrollController: yourHorizontalScrollController,
     verticalScrollbar: ScrollBar.defaultScrollBar(),
     horizontalScrollbar: ScrollBar.defaultScrollBar(),
-    shouldUseSynapticsTouchpadFix: true, // Fixes horizontal scrolling on some windows devices with synaptics touchpad, defaults to false
     child: Container(), /* Your child widget here*/
 );
 ```
 
 ## Customizing Additional Properties
 
-You can pass `ScrollBarSettings` to the DualScroll widget in the constructor with appropriate parameter (It is not necessary to provide all parameters): 
+You can pass `ScrollBarSettings` to the DualScroll widget in the constructor with appropriate parameter (It is not necessary to provide all parameters):
+
 ```dart
 var scrollBarSettings = ScrollBarSettings(
     keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, // Defaults to ScrollViewKeyboardDismissBehavior.manual
@@ -70,7 +76,6 @@ var scrollBarSettings = ScrollBarSettings(
   
   return DualScroll(
         // scrollBars and scrollControllers here
-        shouldUseSynapticsTouchpadFix: true, // Fixes horizontal scrolling on some windows devices with synaptics touchpad, defaults to false
         settings: scrollBarSettings, //Optional
         pillColor: Colors.blueAccent, //Optional
         dimmedPillColor: Colors.blueAccent.withOpacity(0.8), //Optional
@@ -80,7 +85,6 @@ var scrollBarSettings = ScrollBarSettings(
         child: child, // Required
     );
 ```
-
 
 ## Additional information
 
@@ -97,3 +101,5 @@ Also, We would really appreciate if you view our [website][4] and our [apps][5].
 [4]: https://nbrg-developers.web.app
 
 [5]: https://nbrg-developers.web.app/services/one-nbrg/apps
+
+[6]: https://pub.dev/packages/synaptics_driver_fix_windows

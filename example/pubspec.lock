@@ -56,7 +56,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.8"
+    version: "0.0.9"
   fake_async:
     dependency: transitive
     description:
@@ -149,13 +149,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
-  synaptics_driver_fix_windows:
-    dependency: transitive
-    description:
-      name: synaptics_driver_fix_windows
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.2"
   term_glyph:
     dependency: transitive
     description:
